@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CAA English C1–C2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+/* Layout: a study-planner page. Header with progress and the 5-step route, then two level banners (C1: modules 1–5, C2: modules 6–9, 5 units each) built on the CEFR descriptors. */
+:root{
+  --bg:#f3f5fa; --surface:#ffffff; --ink:#14213d; --muted:#56607a; --line:#d9deea;
+  --accent:#1f4fd1; --accent-soft:#e3eafc; --gold:#f2b705; --gold-ink:#5c4300;
+  --new:#0f7a5a; --new-soft:#dcf3ea; --soon:#8a5a00; --soon-soft:#fbefd2;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e1424; --surface:#161e33; --ink:#e8ecf6; --muted:#9aa5c0; --line:#2a3552;
+  --accent:#8eabff; --accent-soft:#1f2c52; --gold:#f2c23a; --gold-ink:#f2c23a;
+  --new:#5fd3a9; --new-soft:#123a2e; --soon:#f0c062; --soon-soft:#3a2d10; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e1424; --surface:#161e33; --ink:#e8ecf6; --muted:#9aa5c0; --line:#2a3552;
+  --accent:#8eabff; --accent-soft:#1f2c52; --gold:#f2c23a; --gold-ink:#f2c23a;
+  --new:#5fd3a9; --new-soft:#123a2e; --soon:#f0c062; --soon-soft:#3a2d10; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55}
+.wrap{max-width:1080px;margin:0 auto;padding-block:32px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.eyebrow{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(2rem,5vw,3.1rem);line-height:1.05;margin:.35em 0 .3em;text-wrap:balance}
+h1 span{background:linear-gradient(transparent 62%,var(--gold) 62%,var(--gold) 90%,transparent 90%);padding:0 .08em}
+.lead{max-width:62ch;color:var(--muted);font-size:1.08rem;margin:0}
+h2{font-family:var(--display);font-weight:700;font-size:1.45rem;margin:0;text-wrap:balance}
+/* Progress */
+.progress{margin-top:22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.bar{flex:1 1 240px;max-width:420px;height:12px;border-radius:99px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--new);border-radius:99px;transition:width .4s ease}
+.progress b{font-variant-numeric:tabular-nums}
+/* Route */
+.route{margin-top:28px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px}
+.route ol{list-style:none;margin:14px 0 0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;counter-reset:s}
+.route li{counter-increment:s;position:relative;padding:12px;border-radius:10px;background:var(--bg);min-width:0}
+.route li::before{content:counter(s);font-family:var(--display);font-weight:800;font-size:1.3rem;color:var(--accent);display:block;line-height:1}
+.route b{display:block;margin-top:6px}
+.route small{color:var(--muted);font-size:.86rem;display:block}
+.skills{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.skills i{font-style:normal;font-size:.74rem;padding:1px 7px;border-radius:99px;background:var(--accent-soft);color:var(--accent);font-weight:700}
+.evidence{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.evidence div{border:1px dashed var(--line);border-radius:10px;padding:10px 12px;font-size:.9rem;color:var(--muted)}
+.evidence strong{color:var(--ink)}
+/* Controls */
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:40px 0 18px}
+.controls label{font-weight:700;font-size:.9rem}
+#q{flex:1 1 220px;min-width:0;font:inherit;padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:inherit;font-size:.88rem;font-weight:700;padding:7px 13px;border-radius:99px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+/* Modules & cards */
+.group{margin-top:36px}
+.group-head{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;align-items:baseline;margin-bottom:14px}
+.mod-num{grid-row:span 2;font-family:var(--display);font-weight:800;font-size:2.4rem;line-height:1;color:var(--accent)}
+.group-head .count{color:var(--muted);font-size:.9rem;margin-left:8px;font-weight:400;font-family:var(--body)}
+.cando{margin:0;color:var(--muted);font-size:.93rem;max-width:75ch}
+.cando em{font-style:normal;font-weight:700;color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.card .top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.lvl{font-family:var(--display);font-weight:800;font-size:.82rem;padding:3px 9px;border-radius:6px;background:var(--gold);color:#2b2000;letter-spacing:.02em;font-variant-numeric:tabular-nums}
+.status{font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:2px 8px;border-radius:99px}
+.st-progress{background:var(--new-soft);color:var(--new)}
+.card h3{font-family:var(--display);font-weight:700;font-size:1.2rem;line-height:1.2;margin:4px 0 0;text-wrap:balance}
+.focus{color:var(--muted);font-size:.93rem;margin:0}
+.card .go{margin-top:auto;padding-top:8px}
+.card a.btn{display:inline-block;font-weight:700;text-decoration:none;color:var(--surface);background:var(--accent);padding:8px 14px;border-radius:9px}
+.card a.btn:hover{filter:brightness(1.08)}
+.empty{color:var(--muted);padding:20px;border:1px dashed var(--line);border-radius:12px;text-align:center}
+footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:.88rem}
+@media (max-width:760px){.route ol{grid-template-columns:repeat(2,minmax(0,1fr))}.route li:last-child{grid-column:1/-1}.evidence{grid-template-columns:1fr}.mod-num{font-size:1.9rem}}
+@media (prefers-reduced-motion:no-preference){.card{transition:transform .15s ease,border-color .15s}.card:hover{transform:translateY(-2px);border-color:var(--accent)}}
+.lvl-c2{background:#6d3bc4;color:#fff}
+/* Level banners (C1 and C2 share one site) */
+.level-head{margin-top:52px;padding:18px 20px;border-radius:14px;background:var(--accent-soft);border:1px solid var(--line);display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.level-head .big{font-family:var(--display);font-weight:800;font-size:2.2rem;line-height:1;padding:6px 12px;border-radius:10px;background:var(--gold);color:#2b2000}
+.level-head.c2 .big{background:#6d3bc4;color:#fff}
+.level-head div{flex:1 1 260px;min-width:0}
+.level-head h2{font-size:1.35rem}
+.level-head p{margin:2px 0 0;color:var(--muted);font-size:.95rem}
+.level-head .count{color:var(--muted);font-size:.9rem;margin-left:8px;font-weight:400;font-family:var(--body)}
+.chips .sep{width:1px;background:var(--line);margin:0 4px}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">CAA Virtual · BUAP · English C1–C2 · CEFR</div>
+    <h1>English C1–C2: <span>45 units</span> for proficient users</h1>
+    <p class="lead">Two levels in one place, based on the Common European Framework of Reference (CEFR): 25 units for C1, the level of effective operational proficiency, and 20 units for C2, the level of mastery. Go in order or choose any unit. Every unit takes about 80–90 minutes and you can come back any time.</p>
+    <div class="progress" aria-live="polite">
+      <div class="bar" role="progressbar" aria-label="Units completed" aria-valuemin="0" aria-valuemax="45" id="bar"><i></i></div>
+      <span><b id="done-count">0</b> of 45 units completed</span>
+      <span id="level-count" style="color:var(--muted)"></span>
+    </div>
+  </header>
+
+  <section class="route" aria-labelledby="route-h">
+    <h2 id="route-h">How every unit works</h2>
+    <ol>
+      <li><b>Presentation</b><small>Meet the topic in a real situation.</small></li>
+      <li><b>Objectives</b><small>See what you will be able to do.</small></li>
+      <li><b>Explanation</b><small>Vocabulary, grammar and examples.</small></li>
+      <li><b>Practice</b><small>Four skills:</small><span class="skills"><i>Listening</i><i>Reading</i><i>Writing</i><i>Speaking</i></span></li>
+      <li><b>Self-assessment</b><small>Rate six "I can…" statements from 1 to 5.</small></li>
+    </ol>
+    <div class="evidence">
+      <div><strong>Writing evidence:</strong> write and submit your text directly in the unit.</div>
+      <div><strong>Speaking:</strong> repeat sentences and get a pronunciation score, then record your task for your course platform.</div>
+    </div>
+  </section>
+
+  <div class="controls">
+    <label for="q">Find a unit</label>
+    <input id="q" type="search" placeholder="Try “inversion”, “register” or “summary”" autocomplete="off">
+    <div class="chips" role="group" aria-label="Filter by level or module" id="mods"></div>
+  </div>
+
+  <main id="list"></main>
+
+  <footer>CAA Virtual · BUAP · Levels C1 and C2 (CEFR) · Your progress is saved on this device only.</footer>
+</div>
+
+<script>
+/* ===== Units on the home page =====
+   To add a unit: copy the _template folder, rename it (e.g. "my-new-unit"),
+   edit its data.js (slug, number, level), then add one line here with url: "my-new-unit/" and its module (mod).
+   Modules 1–5 are C1; modules 6–9 are C2 (see MODULES). */
+const UNITS = [
+  {n:1, mod:1, title:"First Impressions", focus:"Deduction and speculation: must have been, can't have, might well, is bound to", url:"first-impressions/"},
+  {n:2, mod:1, title:"Decision Fatigue", focus:"Conditional inversion and alternatives: Had I known, Should you, Were it not for, supposing", url:"decision-fatigue/"},
+  {n:3, mod:1, title:"The Comfort Zone", focus:"Stance adverbs: arguably, admittedly, presumably, undeniably", url:"the-comfort-zone/"},
+  {n:4, mod:1, title:"Mind Games", focus:"Advanced clefts and fronting: It wasn't until… that, What… did was, All… is", url:"mind-games/"},
+  {n:5, mod:1, title:"The Science of Happiness", focus:"Writing a discursive essay: thesis, concession and conclusion", url:"the-science-of-happiness/"},
+  {n:6, mod:2, title:"Mind Your Language", focus:"Register: formal and informal; phrasal verbs and their formal equivalents", url:"mind-your-language/"},
+  {n:7, mod:2, title:"Lost for Words", focus:"Word formation: prefixes and suffixes (counter-, -ify, -ism, -wise)", url:"lost-for-words/"},
+  {n:8, mod:2, title:"Tact and Diplomacy", focus:"Being tactful: distancing tenses, negative questions, understatement", url:"tact-and-diplomacy/"},
+  {n:9, mod:2, title:"Bitterly Disappointed", focus:"Adverb–adjective collocations: highly unlikely, deeply offended", url:"bitterly-disappointed/"},
+  {n:10, mod:2, title:"The Formal Email", focus:"Writing a formal letter or email: requests and complaints", url:"the-formal-email/"},
+  {n:11, mod:3, title:"The Startup Mindset", focus:"Business phrasal verbs at C1: branch out, break into, pull out of", url:"the-startup-mindset/"},
+  {n:12, mod:3, title:"Corporate Responsibility", focus:"Complex noun phrases: pre- and post-modification", url:"corporate-responsibility/"},
+  {n:13, mod:3, title:"Money Talks", focus:"Advanced comparison: nowhere near, far and away, the more… the more", url:"money-talks/"},
+  {n:14, mod:3, title:"Chairing a Meeting", focus:"Managing a discussion: bringing people in, interrupting, summarizing", url:"chairing-a-meeting/"},
+  {n:15, mod:3, title:"Whistleblowers", focus:"Reporting verbs with nuance: allege, concede, contend, dismiss", url:"whistleblowers/"},
+  {n:16, mod:4, title:"Artificial Minds", focus:"Future with nuance: be set to, be on the verge of, be poised to", url:"artificial-minds/"},
+  {n:17, mod:4, title:"Living Longer", focus:"Advanced participle clauses: perfect participles and absolute phrases", url:"living-longer/"},
+  {n:18, mod:4, title:"Designer Babies?", focus:"Concession: albeit, notwithstanding, granted, much as", url:"designer-babies/"},
+  {n:19, mod:4, title:"Cause and Effect", focus:"Cause and result: stem from, give rise to, bring about, attributable to", url:"cause-and-effect/"},
+  {n:20, mod:4, title:"The Article", focus:"Writing a magazine article: hooks, direct address, rhetorical questions", url:"the-article/"},
+  {n:21, mod:5, title:"Cultural Heritage", focus:"Prepositional phrases: in light of, in the wake of, by virtue of", url:"cultural-heritage/"},
+  {n:22, mod:5, title:"Urban Legends", focus:"Distancing: is said to have been, there is thought to be, allegedly", url:"urban-legends/"},
+  {n:23, mod:5, title:"The Power of Protest", focus:"Subjunctive and formulaic forms: It is vital that he be, Be that as it may", url:"the-power-of-protest/"},
+  {n:24, mod:5, title:"Telling Tales", focus:"Spoken anecdotes: narrative present, vague language, engaging the listener", url:"telling-tales/"},
+  {n:25, mod:5, title:"My C1 Milestone", focus:"C1 review and final project", url:"my-c1-milestone/"},
+  {n:26, mod:6, title:"Shades of Meaning", focus:"Connotation and near-synonyms: thrifty or stingy, slim or skinny", url:"shades-of-meaning/"},
+  {n:27, mod:6, title:"Reading the Room", focus:"Implied meaning: implicature, understatement, what people really mean", url:"reading-the-room/"},
+  {n:28, mod:6, title:"Fine Distinctions", focus:"Advanced modality: be to, needn't have, could conceivably, would sooner", url:"fine-distinctions/"},
+  {n:29, mod:6, title:"Headline News", focus:"Headline language: compression, ambiguity and wordplay", url:"headline-news/"},
+  {n:30, mod:6, title:"The Critical Review", focus:"Writing a critical review: evaluative language and balanced judgment", url:"the-critical-review/"},
+  {n:31, mod:7, title:"Who Holds the Power?", focus:"Nominal clauses: the extent to which, the fact that, whether", url:"who-holds-the-power/"},
+  {n:32, mod:7, title:"Post-Truth", focus:"Evaluating claims: ostensibly, purportedly, unfounded, by all accounts", url:"post-truth/"},
+  {n:33, mod:7, title:"The Letter of the Law", focus:"Legal and official register: shall, hereby, whereby, notwithstanding", url:"the-letter-of-the-law/"},
+  {n:34, mod:7, title:"Moral Dilemmas", focus:"Hypothetical meaning: Were we to, Suppose, What if, would that", url:"moral-dilemmas/"},
+  {n:35, mod:7, title:"The Opinion Column", focus:"Writing an opinion column: cohesion, referencing and voice", url:"the-opinion-column/"},
+  {n:36, mod:8, title:"A Life in Pages", focus:"Narrative style: fronting, inversion of place, reduced relatives", url:"a-life-in-pages/"},
+  {n:37, mod:8, title:"Untranslatable", focus:"Language and identity: loanwords, compounds and abstract nouns", url:"untranslatable/"},
+  {n:38, mod:8, title:"The Creative Process", focus:"Three-part phrasal verbs: come up against, live up to, put up with", url:"the-creative-process/"},
+  {n:39, mod:8, title:"What Is Beauty?", focus:"Generalizing and qualifying: by and large, in essence, to all intents and purposes", url:"what-is-beauty/"},
+  {n:40, mod:8, title:"The Lecture", focus:"Academic listening: signposting, note-taking and digressions", url:"the-lecture/"},
+  {n:41, mod:9, title:"In a Nutshell", focus:"Summarizing and paraphrasing: reformulating complex texts", url:"in-a-nutshell/"},
+  {n:42, mod:9, title:"The Go-Between", focus:"Mediation: explaining, simplifying and adapting a message", url:"the-go-between/"},
+  {n:43, mod:9, title:"Off the Cuff", focus:"Spontaneous speech: self-correction, rephrasing, elaborating", url:"off-the-cuff/"},
+  {n:44, mod:9, title:"Wit and Humour", focus:"Irony, understatement and sarcasm", url:"wit-and-humour/"},
+  {n:45, mod:9, title:"My C2 Journey", focus:"C2 review and final project", url:"my-c2-journey/"}
+];
+
+/* Levels and modules. Each module has a CEFR can-do statement for its level. */
+const LEVELS = [
+  {id:"C1", name:"Advanced", tag:"Effective operational proficiency", desc:"Understand demanding, longer texts, recognize implicit meaning and express yourself fluently and flexibly for social, academic and professional purposes."},
+  {id:"C2", name:"Proficiency", tag:"Mastery", desc:"Understand virtually everything you hear or read, summarize information from different sources and express yourself spontaneously, very fluently and precisely, with fine shades of meaning."}
+];
+const MODULES = [
+  {mod:1, level:"C1", name:"Mind and Behaviour", cando:"I can understand and discuss complex ideas about the mind, expressing degrees of certainty and my own stance precisely."},
+  {mod:2, level:"C1", name:"Language and Communication", cando:"I can adapt my register to the situation and write clear, well-structured formal correspondence."},
+  {mod:3, level:"C1", name:"Work, Money and Ethics", cando:"I can take an active part in professional discussions, chair a meeting and report others' views accurately."},
+  {mod:4, level:"C1", name:"Science, Health and Technology", cando:"I can understand specialized articles and explain causes, consequences and future developments clearly."},
+  {mod:5, level:"C1", name:"Culture and Society", cando:"I can discuss social and cultural issues in a formal register and tell an engaging anecdote."},
+  {mod:6, level:"C2", name:"Nuance and Precision", cando:"I can convey finer shades of meaning precisely and understand what is implied but not said."},
+  {mod:7, level:"C2", name:"Power, Truth and Ethics", cando:"I can evaluate complex arguments, deal with official and legal language and present a sophisticated case."},
+  {mod:8, level:"C2", name:"Arts, Ideas and Identity", cando:"I can follow abstract and academic discussion with ease and write in a style appropriate to the reader."},
+  {mod:9, level:"C2", name:"Mastery", cando:"I can summarize, mediate and speak spontaneously with precision, using irony and humour appropriately."}
+];
+let filter = "all"; /* "all", "C1", "C2" or a module number */
+
+const chipsEl = document.getElementById("mods");
+const chipDefs = [{key:"all", label:"All"}, {key:"C1", label:"C1"}, {key:"C2", label:"C2"}, {sep:true}]
+  .concat(MODULES.map(m => ({key:m.mod, label:"Module " + m.mod, title:m.level + " · " + m.name})));
+chipDefs.forEach(c=>{
+  if (c.sep) { chipsEl.appendChild(Object.assign(document.createElement("span"), {className:"sep"})); return; }
+  const b=document.createElement("button");
+  b.className="chip"; b.type="button"; b.id="filter-"+c.key;
+  b.textContent = c.label;
+  if (c.title) b.title = c.title;
+  b.setAttribute("aria-pressed", c.key===filter ? "true":"false");
+  b.addEventListener("click",()=>{filter=c.key;[...chipsEl.querySelectorAll(".chip")].forEach(x=>x.setAttribute("aria-pressed",x===b?"true":"false"));render();});
+  chipsEl.appendChild(b);
+});
+document.getElementById("q").addEventListener("input",render);
+
+function esc(s){return s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function levelOf(u){ return MODULES.find(m=>m.mod===u.mod).level; }
+function done(u){ try { const s=JSON.parse(localStorage.getItem("c1c2:"+u.url.replace(/\/$/,""))||"{}"); return s.self && Object.keys(s.self).length>=6; } catch(e){ return false; } }
+
+function progress(){
+  const n = UNITS.filter(done).length;
+  document.getElementById("done-count").textContent = n;
+  const bar = document.getElementById("bar");
+  bar.setAttribute("aria-valuenow", n);
+  bar.firstElementChild.style.width = (n / UNITS.length * 100) + "%";
+  document.getElementById("level-count").textContent = "· " + LEVELS.map(L => {
+    const all = UNITS.filter(u=>levelOf(u)===L.id); return L.id + ": " + all.filter(done).length + "/" + all.length;
+  }).join(" · ");
+}
+
+function render(){
+  const q=document.getElementById("q").value.trim().toLowerCase();
+  const list=document.getElementById("list"); list.innerHTML="";
+  let shown=0;
+  LEVELS.forEach(L=>{
+    if (filter==="C1"||filter==="C2") { if (filter!==L.id) return; }
+    let head=null;
+    MODULES.filter(g=>g.level===L.id).forEach(g=>{
+      if (typeof filter==="number" && filter!==g.mod) return;
+      const items=UNITS.filter(u=>u.mod===g.mod
+        && (!q || (u.title+" "+u.focus+" "+g.name+" "+g.level).toLowerCase().includes(q)));
+      if(!items.length) return;
+      if(!head){
+        const all=UNITS.filter(u=>levelOf(u)===L.id).length;
+        head=document.createElement("section"); head.className="level-head "+L.id.toLowerCase(); head.id="level-"+L.id.toLowerCase();
+        head.innerHTML=`<span class="big">${L.id}</span><div><h2>Level ${L.id} · ${esc(L.name)} <span class="count">${all} units</span></h2>
+          <p><strong>${esc(L.tag)}.</strong> ${esc(L.desc)}</p></div>`;
+        list.appendChild(head);
+      }
+      shown+=items.length;
+      const sec=document.createElement("section"); sec.className="group"; sec.id="module-"+g.mod;
+      sec.innerHTML=`<div class="group-head"><span class="mod-num" aria-hidden="true">${g.mod}</span>
+        <h2>Module ${g.mod} · ${esc(g.name)}<span class="count">${items.length} unit${items.length>1?"s":""}</span></h2>
+        <p class="cando"><em>CEFR ${g.level}:</em> ${esc(g.cando)}</p></div>`;
+      const grid=document.createElement("div"); grid.className="grid";
+      items.forEach(u=>{
+        const badge = done(u) ? `<span class="status st-progress">Completed</span>` : "";
+        grid.insertAdjacentHTML("beforeend",
+          `<article class="card"><div class="top"><span class="lvl lvl-${g.level.toLowerCase()}">${g.level} · Unit ${u.n}</span>${badge}</div>
+           <h3>${esc(u.title)}</h3><p class="focus">${esc(u.focus)}</p><div class="go"><a class="btn" href="${esc(u.url)}">Start unit →</a></div></article>`);
+      });
+      sec.appendChild(grid); list.appendChild(sec);
+    });
+  });
+  if(!shown) list.innerHTML=`<p class="empty">No units match. Try another word or choose “All”.</p>`;
+}
+progress();
+render();
+</script>
+</body>
+</html>
